@@ -1,1 +1,357 @@
-code
+# ============================================================
+# Smart Home Device Manager
+# Bright Minds Academy
+# Student: Joaquin Alexander Canales Garcia
+#
+# This program allows staff to manage smart classroom devices.
+# Users can:
+# - View all devices
+# - Add new devices
+# - Update device status
+# - Search for a device
+# - Delete a device
+# - View device statistics
+# ============================================================
+
+# -----------------------------
+# Device Status Constants
+# -----------------------------
+
+ONLINE = "Online"
+OFFLINE = "Offline"
+MAINTENANCE = "Maintenance"
+
+# -----------------------------
+# Dictionary of Smart Devices
+# -----------------------------
+
+devices = {
+
+    "Smart Light A1": {
+        "room": "Room A101",
+        "status": ONLINE
+    },
+
+    "Smart Thermostat T1": {
+        "room": "Room A102",
+        "status": OFFLINE
+    },
+
+    "Projector P1": {
+        "room": "Room B201",
+        "status": ONLINE
+    },
+
+    "Security Camera C1": {
+        "room": "ICT Lab",
+        "status": MAINTENANCE
+    },
+
+    "Smart Speaker S1": {
+        "room": "Reception",
+        "status": ONLINE
+    }
+
+}
+# -----------------------------
+# Display Main Menu
+# -----------------------------
+
+def show_menu():
+
+    print("\n=========================================")
+    print("     SMART HOME DEVICE MANAGER")
+    print("      Bright Minds Academy")
+    print("=========================================")
+    print("1. View All Devices")
+    print("2. Add New Device")
+    print("3. Update Device Status")
+    print("4. Search Device")
+    print("5. Delete Device")
+    print("6. Show Statistics")
+    print("7. Exit")
+    print("=========================================")
+
+# -----------------------------
+# View All Devices
+# -----------------------------
+
+def show_devices():
+
+    print("\n========== DEVICE LIST ==========")
+
+    # Check if there are any devices stored
+    if len(devices) == 0:
+        print("No devices available.")
+        return
+
+    # Table headings
+    print(f"{'Device Name':<25} {'Room':<15} {'Status'}")
+    print("-" * 55)
+
+    # Display every device in the dictionary
+    for device_name, details in devices.items():
+        print(f"{device_name:<25} {details['room']:<15} {details['status']}")
+
+    print("-" * 55)
+
+# -----------------------------
+# Add New Device
+# -----------------------------
+
+def add_device():
+
+    # Ask the user to enter the name of the new device.
+    device_name = input("\nEnter the device name: ").strip()
+
+    # Check if the user entered a device name.
+    if device_name == "":
+        print("Device name cannot be empty.")
+        return
+
+    # Check if the device already exists in the dictionary.
+    if device_name in devices:
+        print("This device already exists.")
+        return
+
+    # Ask the user to enter the room where the device is located.
+    room = input("Enter the room: ").strip()
+
+    # Check if the room was entered.
+    if room == "":
+        print("Room cannot be empty.")
+        return
+
+    # Add the new device to the dictionary.
+    # Every new device starts with the status "Offline".
+    devices[device_name] = {
+        "room": room,
+        "status": OFFLINE
+    }
+
+    print("\nDevice added successfully.")
+    print("The new device has been set to Offline by default.")
+
+# -----------------------------
+# Update Device Status
+# -----------------------------
+
+def update_device_status():
+
+    # Check if there are any devices in the system.
+    if len(devices) == 0:
+        print("\nNo devices available.")
+        return
+
+    print("\n========== UPDATE DEVICE STATUS ==========")
+
+    # Create a list from the dictionary keys.
+    # This allows the user to select a device by number.
+    device_list = list(devices.keys())
+
+    # Display all devices with a number.
+    for index, device in enumerate(device_list, start=1):
+        print(f"{index}. {device}")
+
+    # Ask the user to choose a device.
+    try:
+        choice = int(input("\nChoose a device number: "))
+
+        # Check if the selected number is valid.
+        if choice < 1 or choice > len(device_list):
+            print("Invalid device number.")
+            return
+
+    except ValueError:
+        print("Please enter a valid number.")
+        return
+
+    # Save the selected device name.
+    selected_device = device_list[choice - 1]
+
+    print("\nSelect the new status")
+    print("1. Online")
+    print("2. Offline")
+    print("3. Maintenance")
+
+    # Ask the user to choose the new status.
+    try:
+        status_choice = int(input("Choose a status: "))
+
+        # Convert the user's choice into the correct status.
+        if status_choice == 1:
+            new_status = ONLINE
+        elif status_choice == 2:
+            new_status = OFFLINE
+        elif status_choice == 3:
+            new_status = MAINTENANCE
+        else:
+            print("Invalid status option.")
+            return
+
+    except ValueError:
+        print("Please enter a valid number.")
+        return
+
+    # Update the status of the selected device.
+    devices[selected_device]["status"] = new_status
+
+    print(f"\nThe status of '{selected_device}' has been updated to {new_status}.")
+
+# -----------------------------
+# Search Device
+# -----------------------------
+
+def search_device():
+
+    # Check if there are any devices stored in the system.
+    if len(devices) == 0:
+        print("\nNo devices available.")
+        return
+
+    # Ask the user to enter the device name they want to search for.
+    search_name = input("\nEnter the device name: ").strip()
+
+    # Check if the device exists in the dictionary.
+    if search_name in devices:
+
+        # Retrieve the device information.
+        device = devices[search_name]
+
+        print("\n========== DEVICE FOUND ==========")
+        print(f"Device Name : {search_name}")
+        print(f"Room        : {device['room']}")
+        print(f"Status      : {device['status']}")
+        print("==================================")
+
+    else:
+        # Display a message if the device does not exist.
+        print("Device not found.")
+
+# -----------------------------
+# Delete Device
+# -----------------------------
+
+def delete_device():
+
+    # Check if there are any devices stored in the system.
+    if len(devices) == 0:
+        print("\nNo devices available.")
+        return
+
+    print("\n========== DELETE DEVICE ==========")
+
+    # Create a list of all device names.
+    # This allows the user to choose a device by number.
+    device_list = list(devices.keys())
+
+    # Display each device with a number.
+    for index, device in enumerate(device_list, start=1):
+        print(f"{index}. {device}")
+
+    # Ask the user to choose which device to delete.
+    try:
+        choice = int(input("\nChoose a device number: "))
+
+        # Check that the selected number is valid.
+        if choice < 1 or choice > len(device_list):
+            print("Invalid device number.")
+            return
+
+    except ValueError:
+        print("Please enter a valid number.")
+        return
+
+    # Get the selected device name.
+    selected_device = device_list[choice - 1]
+
+    # Delete the device from the dictionary.
+    del devices[selected_device]
+
+    print(f"\n'{selected_device}' has been deleted successfully.")
+
+# -----------------------------
+# Show Statistics
+# -----------------------------
+
+def show_statistics():
+
+    # Count the total number of devices.
+    total_devices = len(devices)
+
+    # Variables to count how many devices have each status.
+    online_count = 0
+    offline_count = 0
+    maintenance_count = 0
+
+    # Go through every device in the dictionary
+    # and count each status.
+    for device in devices.values():
+
+        if device["status"] == ONLINE:
+            online_count += 1
+
+        elif device["status"] == OFFLINE:
+            offline_count += 1
+
+        elif device["status"] == MAINTENANCE:
+            maintenance_count += 1
+
+    # Display the statistics.
+    print("\n========== DEVICE STATISTICS ==========")
+    print(f"Total Devices : {total_devices}")
+    print(f"Online        : {online_count}")
+    print(f"Offline       : {offline_count}")
+    print(f"Maintenance   : {maintenance_count}")
+    print("=======================================")
+
+# -----------------------------
+# Main Program
+# -----------------------------
+
+def main():
+
+    # Keep showing the menu until the user chooses to exit.
+    while True:
+
+        # Display the main menu.
+        show_menu()
+
+        # Ask the user to choose an option.
+        choice = input("Choose an option (1-7): ")
+
+        # Call the correct function based on the user's choice.
+        if choice == "1":
+            show_devices()
+
+        elif choice == "2":
+            add_device()
+
+        elif choice == "3":
+            update_device_status()
+
+        elif choice == "4":
+            search_device()
+
+        elif choice == "5":
+            delete_device()
+
+        elif choice == "6":
+            show_statistics()
+
+        elif choice == "7":
+            print("\nThank you for using the Smart Home Device Manager.")
+            print("Goodbye!")
+            break
+
+        else:
+            # Display an error message if the user enters an invalid option.
+            print("\nInvalid option. Please choose a number between 1 and 7.")
+
+
+# -----------------------------
+# Start the Program
+# -----------------------------
+
+# Run the main function when the program starts.
+main()
